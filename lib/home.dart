@@ -4,18 +4,41 @@ import 'custom_widgets/height_card.dart';
 import 'custom_widgets/age_weight_card.dart';
 import 'utilities/sizing.dart';
 import 'results.dart';
+import 'utilities/notifications.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
-  bool male = true;
-  double height = 100.0;
-  int weight = 60;
-  int age = 18;
+  HomePage({
+    Key? key,
+    required this.age,
+    required this.height,
+    required this.male,
+    required this.weight,
+    required this.onFemaleSelected,
+    required this.onHeightChanged,
+    required this.onMaleSelected,
+    required this.onWeightAddition,
+    required this.onWeightSubtraction,
+    required this.onAgeAddition,
+    required this.onAgeSubtraction,
+  }) : super(key: key);
+  bool male;
+  double height;
+  int weight;
+  int age;
+  void Function()? onMaleSelected;
+  void Function()? onFemaleSelected;
+  void Function(double) onHeightChanged;
+  void Function()? onWeightAddition;
+  void Function()? onWeightSubtraction;
+  void Function()? onAgeAddition;
+  void Function()? onAgeSubtraction;
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  bool darkMode = false;
   @override
   Widget build(BuildContext context) {
     Sizing.setDimensions(context);
@@ -23,9 +46,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Body Mass Index'),
         centerTitle: true,
-        backgroundColor: Colors.teal,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        actions: [
+          Switch(
+            value: darkMode,
+            onChanged: (value) {
+              const DarkModeSwitch(true).dispatch(context);
+              setState(() {
+                darkMode = value;
+              });
+            },
+          ),
+        ],
       ),
-      backgroundColor: Colors.teal[100],
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -34,23 +68,25 @@ class _HomePageState extends State<HomePage> {
             children: [
               GenderCard(
                 label: 'Male',
-                color: (widget.male ? Colors.teal[600] : Colors.blueGrey[600])!,
+                color: widget.male
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).secondaryHeaderColor,
                 icon: Icons.male,
-                onTap: () => setState(() => widget.male = true),
+                onTap: widget.onMaleSelected,
               ),
               GenderCard(
                 label: 'Female',
-                color:
-                    (!widget.male ? Colors.teal[600] : Colors.blueGrey[600])!,
+                color: !widget.male
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).secondaryHeaderColor,
                 icon: Icons.female,
-                onTap: () => setState(() => widget.male = false),
+                onTap: widget.onFemaleSelected,
               ),
             ],
           ),
           HeightCard(
             height: widget.height,
-            onChanged: ((newHeight) =>
-                setState(() => widget.height = newHeight)),
+            onChanged: widget.onHeightChanged,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -58,26 +94,14 @@ class _HomePageState extends State<HomePage> {
               AgeWeightCard(
                 label: 'Weight',
                 value: widget.weight,
-                onAddition: (() => setState(() {
-                      if (widget.weight < 300) {
-                        widget.weight++;
-                      }
-                    })),
-                onSubtraction: (() => setState(() {
-                      if (widget.weight > 20) {
-                        widget.weight--;
-                      }
-                    })),
+                onAddition: widget.onWeightAddition,
+                onSubtraction: widget.onWeightSubtraction,
               ),
               AgeWeightCard(
                 label: 'Age',
                 value: widget.age,
-                onAddition: (() => setState(() => {
-                      if (widget.age < 100) {widget.age++}
-                    })),
-                onSubtraction: (() => setState(() => {
-                      if (widget.age > 10) {widget.age--}
-                    })),
+                onAddition: widget.onAgeAddition,
+                onSubtraction: widget.onAgeSubtraction,
               ),
             ],
           ),
@@ -89,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context) => Results(
                     result: widget.weight ~/
                         ((widget.height / 100) * (widget.height / 100)),
-                    healthiness: ((widget.weight / widget.height) >= 18.5 ||
+                    healthiness: ((widget.weight / widget.height) >= 18.5 &&
                             (widget.weight / widget.height) <= 24.9)
                         ? 'Normal'
                         : 'Unhealthy',
@@ -100,8 +124,8 @@ class _HomePageState extends State<HomePage> {
               );
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.teal[600]),
-              foregroundColor: MaterialStateProperty.all(Colors.white),
+              backgroundColor:
+                  MaterialStateProperty.all(Theme.of(context).primaryColor),
               elevation: MaterialStateProperty.all(0.0),
               minimumSize: MaterialStateProperty.all(Size(
                 Sizing.blockSize * 90,
@@ -118,9 +142,9 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               'Calculate',
               style: TextStyle(
-                fontSize: Sizing.fontSize * 5,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: Sizing.fontSize * 5,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyText2!.color),
             ),
           ),
         ],

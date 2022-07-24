@@ -20,7 +20,7 @@ class AgeWeightCard extends StatelessWidget {
       width: Sizing.blockSize * 42,
       height: Sizing.blockSizeVertical * 22.5,
       child: Material(
-        color: Colors.blueGrey[600],
+        color: Theme.of(context).secondaryHeaderColor,
         borderRadius: BorderRadius.circular(Sizing.blockSizeVertical * 1.5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -30,14 +30,14 @@ class AgeWeightCard extends StatelessWidget {
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: Sizing.fontSize * 5,
-                  color: Colors.white),
+                  color: Theme.of(context).textTheme.bodyText2!.color),
             ),
             Text(
               '$value',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: Sizing.fontSize * 9,
-                  color: Colors.white),
+                  color: Theme.of(context).textTheme.bodyText2!.color),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -45,12 +45,12 @@ class AgeWeightCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: onSubtraction,
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.bodyText2!.color,
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: onAddition,
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.bodyText2!.color,
                 ),
               ],
             ),

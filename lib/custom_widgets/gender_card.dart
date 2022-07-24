@@ -32,7 +32,7 @@ class GenderCard extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: Colors.white,
+                color: Theme.of(context).textTheme.bodyText2!.color,
                 size: Sizing.blockSizeVertical * 15,
               ),
               Text(
@@ -40,7 +40,7 @@ class GenderCard extends StatelessWidget {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: Sizing.fontSize * 5,
-                    color: Colors.white),
+                    color: Theme.of(context).textTheme.bodyText2!.color),
               )
             ],
           ),
